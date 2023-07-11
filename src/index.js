@@ -5,19 +5,20 @@ const beerImage = document.querySelector('.beer-details img');
 const beerDescription = document.querySelector('.beer-details p');
 const beersList = document.querySelector('#beer-list');
 const beerReviews = document.getElementById('review-list');
-const eachBeerReview = document.querySelectorAll('#review-list li');
 const reviewsForm = document.getElementById('review-form');
 // const BEERS_URL = 'https://api.npoint.io/e87daf8b5ac4bf34f345/beers';
 const BEERS_URL = 'http://localhost:3000/beers';
 
 let aBeer;
+let beers;
 
 function loadFirstBeer() {
 	fetch(BEERS_URL)
 		.then((res) => res.json())
 		.then((data) => {
 			aBeer = data[0];
-			loadAllBeers(data);
+			beers = data;
+			loadAllBeers(beers);
 			renderBeer(aBeer);
 		});
 }
@@ -78,9 +79,3 @@ function addBeerReview(e) {
 	console.log(reviewInput.value);
 	renderBeer(aBeer);
 }
-
-eachBeerReview.forEach((review) =>
-	review.addEventListener('click', (e) => console.log(e))
-);
-
-console.log(eachBeerReview);
