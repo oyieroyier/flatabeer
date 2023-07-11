@@ -4,23 +4,31 @@ const beerName = document.querySelector('.beer-details h2');
 const beerImage = document.querySelector('.beer-details img');
 const beerDescription = document.querySelector('.beer-details p');
 const beersList = document.querySelector('#beer-list');
-const BEERS_URL = 'https://api.npoint.io/e87daf8b5ac4bf34f345/beers';
+const beerReviews = document.getElementById('review-list');
+const reviewsForm = document.getElementById('review-form');
+// const BEERS_URL = 'https://api.npoint.io/e87daf8b5ac4bf34f345/beers';
+const BEERS_URL = 'http://localhost:3000/beers';
 
-let beers;
-let singleBeer;
+let aBeer;
 
 function loadFirstBeer() {
 	fetch(BEERS_URL)
 		.then((res) => res.json())
 		.then((data) => {
-			beers = data;
-			loadAllBeers(beers);
-			renderBeer(beers[0]);
+			loadAllBeers(data);
+			renderBeer(data[0]);
 		});
 }
 
 function renderBeer(singleBeer) {
-	const { name, image_url, description } = singleBeer;
+	beerReviews.innerHTML = '';
+	const { name, image_url, description, reviews } = singleBeer;
+
+	reviews.map((review) => {
+		const beerReview = document.createElement('li');
+		beerReview.textContent = review;
+		beerReviews.appendChild(beerReview);
+	});
 
 	beerName.textContent = name;
 	beerImage.src = image_url;
@@ -33,5 +41,26 @@ function loadAllBeers(beers) {
 
 		singleBeer.textContent = beer.name;
 		beersList.appendChild(singleBeer);
+
+		singleBeer.addEventListener('click', () => {
+			aBeer = beer;
+			console.log(aBeer);
+			renderBeer(aBeer);
+		});
 	});
+}
+
+const reviewInput = reviewsForm.children[1];
+
+reviewsForm.addEventListener('submit', addBeerReview);
+
+function addBeerReview(e) {
+	e.preventDefault();
+
+	const { reviews } = aBeer;
+	reviews.push(reviewInput.value);
+
+	console.log(reviews);
+	console.log(reviewInput.value);
+	renderBeer(aBeer);
 }
